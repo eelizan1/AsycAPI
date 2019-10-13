@@ -19,11 +19,14 @@ namespace Books.Api
         {
             var host = CreateWebHostBuilder(args).Build();
 
+            // Migrate the database 
             using (var scope = host.Services.CreateScope())
             {
                 try
                 {
+                    // get book context 
                     var context = scope.ServiceProvider.GetService<BooksContext>();
+                    // migrate the context 
                     context.Database.Migrate(); 
                 }
                 catch (Exception ex)

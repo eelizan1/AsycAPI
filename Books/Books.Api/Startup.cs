@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Books.Api.Context;
+using Books.Api.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -23,18 +24,17 @@ namespace Books.Api
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
-            // register the DbContext on the container, getting the connection string from
-            // appSettings (note: use this during development; in a production environment,
-            // it's better to store the connection string in an environment variable)
             var connectionString = Configuration["ConnectionStrings:BooksDBConnectionString"];
             services.AddDbContext<BooksContext>(o => o.UseSqlServer(connectionString));
 
-            //services.AddScoped<IBooksRepository, BooksRepository>();
+            // register repository with scoped lifetime 
+            // Dbcontext is disposed of after every request
+            // if you use singleton, then all transactions will be tracked by the DbContext by default which can decrease performance with more and more entities
+            services.AddScoped<IBooksRepository, BooksRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
