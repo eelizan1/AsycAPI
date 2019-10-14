@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Books.Api.Services
 {
-    interface IBooksRepository
+    public interface IBooksRepository
     {
         // Synchonous Methods 
 
